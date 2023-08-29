@@ -48,6 +48,7 @@ void Solution::writeDirectProblemResult(){
     std::ofstream zCoordsFile("graph/dataForGraph/z.txt");
     std::ofstream raCoordsFile("graph/dataForGraph/ra.txt");
     std::fstream declCoordsFile("graph/dataForGraph/decl.txt");
+    std::fstream modelData("dataIO/modelData.txt");
 
     if(!xCoordsFile.is_open()){
         std::cerr << "Failed to open file: " << "/graph/dataForGraph/x.txt" << std::endl;
@@ -64,6 +65,9 @@ void Solution::writeDirectProblemResult(){
     if(!declCoordsFile.is_open()){
         std::cerr << "Failed to open file: " << "/graph/dataForGraph/decl.txt" << std::endl;
     }
+    if(!modelData.is_open()){
+        std::cerr << "Failed to open file: " << "dataIO/modelData.txt" << std::endl;
+    }
 
     for(StateVector state: s55.getHistory()){
         xCoordsFile << state.getCartesianCoords().getX() << std::endl;
@@ -72,6 +76,12 @@ void Solution::writeDirectProblemResult(){
 
         raCoordsFile << state.getEquatorialCoords().getRa() << std::endl;
         declCoordsFile << state.getEquatorialCoords().getDecl() << std::endl;
+    }
+
+    for(ModelVector state: s55.getModelData()){
+        modelData << std::setprecision(7) << state.getDate().getYear() << " " 
+        << std::setprecision(5) << state.getEquatorial().getRa() << " " 
+        << std::setprecision(5) << state.getEquatorial().getDecl() << std::endl;
     }
 
     if(xCoordsFile.is_open()){
@@ -92,6 +102,9 @@ void Solution::writeDirectProblemResult(){
 
     if(declCoordsFile.is_open()){
         declCoordsFile.close();
+    } 
+    if(!modelData.is_open()){
+        modelData.close();
     }
 }
 
@@ -109,7 +122,7 @@ void Solution::readObservatoryData(){
             double Ra;
             double Decl;
             if (iss >> DateInYear >> Ra >> Decl){
-                date.setYear(DateInYear - 2002.54);
+                date.setYear(DateInYear - 2004.511);
                 eCoords.setRa(Ra);
                 eCoords.setDecl(Decl);
                 readlVec.setEquatorialCoords(eCoords);

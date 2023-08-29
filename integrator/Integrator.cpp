@@ -3,7 +3,7 @@
 
 StateVector Integrator::rsFunction(StateVector state){
     StateVector newState;
-    //std::cout << newState.getCartesianCoords().getX();
+    
     double p = -(G * M_BH) / 
     (C * C * state.getCartesianCoords().euclidianNorm() * state.getCartesianCoords().euclidianNorm() * state.getCartesianCoords().euclidianNorm());
 
@@ -37,7 +37,7 @@ StateVector Integrator::rsFunction(StateVector state){
 
     this->calculatePartialDerivates(state, newState.get_df_dx());
 
-    //dx/db = df/dx * dx/db 
+   
     Matrix dx_db = newState.get_df_dx() * state.get_dx_db();
     newState.set_dx_db(dx_db);
 
@@ -105,39 +105,46 @@ std::pair<std::vector<StateVector>, std::vector<ModelVector>> Integrator::RK4(St
     lastState.set_dx_db(lastState.get_dx_db().getIdentityMatrix());
     result.push_back(lastState);
 
-
+    int i = 0;
     while(currentTime < endTime){
+        
         k1 = rsFunction(lastState);
         k2 = rsFunction(lastState + h * (0.5 * k1));
         k3 = rsFunction(lastState + h * (0.5 * k2));
         k4 = rsFunction(lastState + h * k3);
 
         lastState = lastState + h * (1.0 / 6.0) * (k1 + 2.0 * k2 + 2.0 * k3 + k4);
-        currentTime += h;
+        
         lastState.setEquatorialCoords();
         Date date((long long) currentTime);
         lastState.setDate(date);
         result.push_back(lastState);
 
-        auto iter = std::find(times.begin(), times.end(), lastState.getDate().getYear());
-        if(iter != times.end()){
+        
+
+
+        if((i < times.size()) && (times[i] == currentTime)){
             ModelVector modelVec;
-            times.erase(iter);
             modelVec.setCartesianCoords(lastState.getCartesianCoords());
             modelVec.setDate(lastState.getDate());
             modelVec.setEquatorialCoords(lastState.getEquatorialCoords());
             modelVec.setVelocity(lastState.getVelocity());
             modelVec.set_dx_db(lastState.get_dx_db());
             modelData.push_back(modelVec);
+            i++;
+            h = 315570;
         }
+
+        if((i < times.size()) && (times[i] - currentTime < h)){
+            h = times[i] - currentTime;
+        }
+        
+        currentTime += h;
     }
 
     return { result, modelData };
 }
 
 void Integrator::reset(){
-    std::vector<double> timeS = {2004.511, 2004.516, 2005.268, 2006.490, 2006.584, 2006.726, 2006.800, 2007.205, 2007.255, 2007.455, 
-    2008.145, 2008.197, 2008.268, 2008.456, 2008.598, 2008.708, 2009.334, 2009.501, 2009.605, 2009.715, 2010.444, 2010.455, 2011.400, 2012.374, 2013.488, 2015.581};
-    this->times = timeS;
     this->currentTime = 0;
 }

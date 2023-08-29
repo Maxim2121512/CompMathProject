@@ -44,12 +44,8 @@ Matrix GaussNewton::solveSystem(Matrix* grad_f, Matrix* f_b){
             sum += decomposedMatrix.getElem(i,j) * y.getElem(j, 0);
         }
 
-        if(decomposedMatrix.getElem(i,i) == 0){
-            y.setElem(0, i, 0);
-        }
-        else{
-            y.setElem((f_b->getElem(i,0) - sum) / decomposedMatrix.getElem(i,i), i, 0);
-        }
+        y.setElem((f_b->getElem(i,0) - sum) / decomposedMatrix.getElem(i,i), i, 0);
+        
     }
 
     decomposedMatrix = decomposedMatrix.transpose();
@@ -63,12 +59,8 @@ Matrix GaussNewton::solveSystem(Matrix* grad_f, Matrix* f_b){
             sum += decomposedMatrix.getElem(i, j) * solutionSystem.getElem(j,0);
         }
 
-        if(decomposedMatrix.getElem(i,i) == 0){
-            solutionSystem.setElem(0, i, 0);
-        } 
-        else{
-            solutionSystem.setElem((y.getElem(i,0) - sum) / decomposedMatrix.getElem(i,i), i, 0);
-        }
+        solutionSystem.setElem((y.getElem(i,0) - sum) / decomposedMatrix.getElem(i,i), i, 0);
+        
     }
 
     return solutionSystem;

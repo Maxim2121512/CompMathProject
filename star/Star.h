@@ -5,7 +5,7 @@
 
 class Star{
 private:
-    StateVector initialVector{202489678119.6209, 31064725685.65855, 106945561101.91441, 123.58397725118365, 724.4824277946129, 292.13705085720505};
+    StateVector initialVector{-204165006081.4289, 41900659638.58861, -102471256234.72592, 11.52278359821609, 698.8066073842173, 360.98723429562403};
     std::vector<StateVector> history;
     std::vector<ModelVector> modelData;
     std::vector<ModelVector> realData;
