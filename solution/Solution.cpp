@@ -15,12 +15,18 @@ void Solution::inverseProblem(){
     double deltaRa = 0;
     double deltaDecl = 0;
 
+    double RaSum = 0;
+    double DeclSum = 0;
+
     for(int i = 0; i < this->s55.getRealData().size(); i++){
         this->gaussNewton.calculate_dg_dx(this->s55.getModelData().at(i));
         this->gaussNewton.calculate_dr_db(this->s55.getModelData().at(i));
 
         deltaRa = this->s55.getRealData().at(i).getEquatorial().getRa() - this->s55.getModelData().at(i).getEquatorial().getRa();
         deltaDecl = this->s55.getRealData().at(i).getEquatorial().getDecl() - this->s55.getModelData().at(i).getEquatorial().getDecl();
+
+        RaSum += deltaRa * deltaRa;
+        DeclSum += deltaDecl * deltaDecl;
         for(int j = 0; j < 6; j++){
             A.setElem(this->s55.getModelData().at(i).get_dr_db().getElem(0, j), 2 * i, j);
             A.setElem(this->s55.getModelData().at(i).get_dr_db().getElem(1, j), 2 * i + 1, j);
@@ -34,10 +40,12 @@ void Solution::inverseProblem(){
         double Wra = lastDigit != 0 ? (2 * lastDigit) / (acc * 10) : (2 * (lastDigit + 1)) / (acc * 10);
         lastDigit = int(deltaDecl * acc * 10) % 10;
         double Wdec = lastDigit != 0 ? (2 * lastDigit) / (acc * 10) : (2 * (lastDigit + 1)) / (acc * 10);
-        W[2 * i] = 1.0 / (Wra * Wra);
-        W[2 * i + 1] = 1.0 / (Wdec * Wdec);
+        W[2 * i] = 1.0 / Wra * Wra;
+        W[2 * i + 1] = 1.0 / Wdec * Wdec;
   
     }
+    this->sumOfSquares.first = RaSum;
+    this->sumOfSquares.second = DeclSum;
     this->s55.setInitialState(this->gaussNewton.GaussNewtonAlg(this->s55.getInitialVector(), &A, &R, W));
 
 }
@@ -169,6 +177,8 @@ void Solution::generalSolution(){
 
         this->directProblem();
         this->inverseProblem();
+        std::cout << "Ra sum squares = " << sumOfSquares.first << "\n";
+        std::cout << "Decl sum of squares = " << sumOfSquares.second << "\n";
         std::cout << "Current x0 (after GN): " << std::setprecision(18) << s55.getInitialVector().getCartesianCoords().getX() << " " 
         << std::setprecision(18)<< s55.getInitialVector().getCartesianCoords().getY() << " "
         << std::setprecision(18)<< s55.getInitialVector().getCartesianCoords().getZ() << " "
@@ -176,6 +186,8 @@ void Solution::generalSolution(){
         << std::setprecision(9)<< s55.getInitialVector().getVelocity().getVy() << " "
         << std::setprecision(9)<< s55.getInitialVector().getVelocity().getVz() << std::endl;
 
+        result << "Ra sum squares = " << sumOfSquares.first << "\n";
+        result << "Decl sum of squares = " << sumOfSquares.second << "\n";
         result << "Current x0 (after GN): " << std::setprecision(18) << s55.getInitialVector().getCartesianCoords().getX() << " " 
         << std::setprecision(18)<< s55.getInitialVector().getCartesianCoords().getY() << " "
         << std::setprecision(18)<< s55.getInitialVector().getCartesianCoords().getZ() << " "

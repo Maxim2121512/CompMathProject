@@ -7,7 +7,7 @@ void GaussNewton::calculate_dg_dx(ModelVector& modelVector){
 
     modelVector.get_dg_dx().setElem(-1 * y / (x * x + y * y),0, 0);
     modelVector.get_dg_dx().setElem(x / (x * x + y * y), 0, 1);
-    modelVector.get_dg_dx().setElem(-1 * (x * z)/(std::sqrt(x * x + y * y) * (x * x + y * y + z * z)) , 1, 0);
+    modelVector.get_dg_dx().setElem(-1 * (x * z) / (std::sqrt(x * x + y * y) * (x * x + y * y + z * z)) , 1, 0);
     modelVector.get_dg_dx().setElem(-1 * (y * z) / (std::sqrt(x * x + y * y) * (x * x + y * y + z * z)), 1, 1);
     modelVector.get_dg_dx().setElem(((x * x + y * y)) / (std::sqrt(x * x + y * y) * (x * x + y * y + z * z)), 1, 2);
 

@@ -13,6 +13,7 @@ private:
     Star s55;
     Integrator integrator;
     GaussNewton gaussNewton;
+    std::pair<double, double> sumOfSquares;
 public:
     Solution() = default;
 
