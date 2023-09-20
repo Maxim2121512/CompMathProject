@@ -30,7 +30,9 @@ public:
     void set_dx_db(Matrix dx_db);
     void set_dg_dx(Matrix dg_dx);
     void set_dr_db(Matrix dr_db);
-
+    double getCartesianX();
+    double getCartesianY();
+    double getCartesianZ();
     EquatorialCoords getEquatorial();
     CartesianCoords getCartesian();
     Velocity getVelocity();

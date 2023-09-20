@@ -2,7 +2,9 @@
 
 #include <iostream>
 #include <vector>
-#include <math.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <cmath>
 
 class Matrix{
 private:

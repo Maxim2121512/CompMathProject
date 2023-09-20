@@ -9,9 +9,10 @@ void Solution::directProblem(){
 
 
 void Solution::inverseProblem(){
-    Matrix R = Matrix(26*2, 1);
-    Matrix A = Matrix(26*2, 6);
-    double W[26 * 2];
+    int numRows = 26;
+    Matrix R = Matrix(numRows*2, 1);
+    Matrix A = Matrix(numRows*2, 6);
+    double W[numRows * 2];
     double deltaRa = 0;
     double deltaDecl = 0;
 
@@ -40,12 +41,27 @@ void Solution::inverseProblem(){
         double Wra = lastDigit != 0 ? (2 * lastDigit) / (acc * 10) : (2 * (lastDigit + 1)) / (acc * 10);
         lastDigit = int(deltaDecl * acc * 10) % 10;
         double Wdec = lastDigit != 0 ? (2 * lastDigit) / (acc * 10) : (2 * (lastDigit + 1)) / (acc * 10);
-        W[2 * i] = 1.0 / Wra * Wra;
-        W[2 * i + 1] = 1.0 / Wdec * Wdec;
+        W[2 * i] = 1.0 / (Wra * Wra);
+        W[2 * i + 1] = 1.0 / (Wdec * Wdec);
   
     }
-    this->sumOfSquares.first = RaSum;
-    this->sumOfSquares.second = DeclSum;
+    long double Ra_avg = RaSum / numRows;
+    long double Decl_avg = DeclSum / numRows;
+
+    long double devRa = 0, devDecl = 0;
+
+    for(int i = 0; i < numRows; i++){
+        auto Ra_i = R.getElem(2*i, 0);
+        auto Decl_i = R.getElem(2 * i + 1, 0);
+        devRa += pow(Ra_i - Ra_avg, 2);
+        devDecl += pow(Decl_i - Decl_avg, 2);
+    }
+
+    devRa /= numRows;
+    devDecl /= numRows;
+
+    this->sumOfSquares.first = sqrtl(devRa);
+    this->sumOfSquares.second = sqrtl(devDecl);
     this->s55.setInitialState(this->gaussNewton.GaussNewtonAlg(this->s55.getInitialVector(), &A, &R, W));
 
 }
@@ -88,8 +104,8 @@ void Solution::writeDirectProblemResult(){
 
     for(ModelVector state: s55.getModelData()){
         modelData << std::setprecision(7) << state.getDate().getYear() << " " 
-        << std::setprecision(5) << state.getEquatorial().getRa() << " " 
-        << std::setprecision(5) << state.getEquatorial().getDecl() << std::endl;
+        <<std::setprecision(6)<< state.getEquatorial().getRa() << " " 
+        <<std::setprecision(6)<< state.getEquatorial().getDecl() << std::endl;
     }
 
     if(xCoordsFile.is_open()){

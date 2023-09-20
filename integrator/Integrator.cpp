@@ -52,42 +52,43 @@ void Integrator::calculatePartialDerivates(StateVector& state, Matrix& partialDe
     partialDerivates.setElem(1, 2, 5);
 
     double len = pow(state.getCartesianCoords().euclidianNorm(), 5.0);
+    double len2 = pow(state.getCartesianCoords().euclidianNorm(), 6.0);
 
-    partialDerivates.setElem( ((G * M_BH) * 
-    (2 * pow(state.getCartesianCoords().getX(),2) - pow(state.getCartesianCoords().getY(), 2) - pow(state.getCartesianCoords().getZ(), 2))) 
-    / len , 3, 0);
+    partialDerivates.setElem( -((G * M_BH) * 
+    (pow(state.getCartesianCoords().euclidianNorm(), 3) - 3 * pow(state.getCartesianCoords().getX(),2) * state.getCartesianCoords().euclidianNorm())) 
+    / pow(state.getCartesianCoords().euclidianNorm(), 6.0) , 3, 0);
 
     partialDerivates.setElem( 3 * ((G * M_BH) * 
     (state.getCartesianCoords().getX() * state.getCartesianCoords().getY())) 
-    / len , 3, 1);
+    / pow(state.getCartesianCoords().euclidianNorm(), 5.0) , 3, 1);
 
     partialDerivates.setElem( 3 * ((G * M_BH) * 
     (state.getCartesianCoords().getX() * state.getCartesianCoords().getZ())) 
-    / len , 3, 2);
+    / pow(state.getCartesianCoords().euclidianNorm(), 5.0) , 3, 2);
 
     partialDerivates.setElem( 3 * ((G * M_BH) * 
     (state.getCartesianCoords().getX() * state.getCartesianCoords().getY())) 
-    / len , 4, 0);
+    / pow(state.getCartesianCoords().euclidianNorm(), 5.0) , 4, 0);
 
-    partialDerivates.setElem( -((G * M_BH) * 
-    (pow(state.getCartesianCoords().getX(),2) - 2 * pow(state.getCartesianCoords().getY(), 2) + pow(state.getCartesianCoords().getZ(), 2))) 
-    / len , 4, 1);
+    partialDerivates.setElem(-((G * M_BH) * 
+    (pow(state.getCartesianCoords().euclidianNorm(), 3) - 3 * pow(state.getCartesianCoords().getY(),2) * state.getCartesianCoords().euclidianNorm())) 
+    / pow(state.getCartesianCoords().euclidianNorm(), 6.0) , 4, 1);
 
     partialDerivates.setElem( 3 * ((G * M_BH) * 
     (state.getCartesianCoords().getY() * state.getCartesianCoords().getZ())) 
-    / len , 4, 2);
+    / pow(state.getCartesianCoords().euclidianNorm(), 5.0) , 4, 2);
 
     partialDerivates.setElem( 3 * ((G * M_BH) * 
     (state.getCartesianCoords().getX() * state.getCartesianCoords().getZ())) 
-    / len , 5, 0);
+    / pow(state.getCartesianCoords().euclidianNorm(), 5.0) , 5, 0);
 
     partialDerivates.setElem( 3 * ((G * M_BH) * 
     (state.getCartesianCoords().getY() * state.getCartesianCoords().getZ())) 
-    / len , 5, 1);
+    / pow(state.getCartesianCoords().euclidianNorm(), 5.0) , 5, 1);
 
     partialDerivates.setElem( -((G * M_BH) * 
-    (pow(state.getCartesianCoords().getX(),2) + pow(state.getCartesianCoords().getY(), 2) - 2 * pow(state.getCartesianCoords().getZ(), 2))) 
-    / len , 5, 2);
+    (pow(state.getCartesianCoords().euclidianNorm(), 3) - 3 * pow(state.getCartesianCoords().getZ(),2) * state.getCartesianCoords().euclidianNorm())) 
+    / pow(state.getCartesianCoords().euclidianNorm(), 6.0) , 5, 2);
 }
 
 
@@ -132,7 +133,7 @@ std::pair<std::vector<StateVector>, std::vector<ModelVector>> Integrator::RK4(St
             modelVec.set_dx_db(lastState.get_dx_db());
             modelData.push_back(modelVec);
             i++;
-            h = 315570;
+            h = 86400;
         }
 
         if((i < times.size()) && (times[i] - currentTime < h)){

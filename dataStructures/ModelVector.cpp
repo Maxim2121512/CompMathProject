@@ -5,6 +5,18 @@ void ModelVector::setCartesianCoords(CartesianCoords coords){
     this->cartesianCoords = coords;
 }
 
+double ModelVector::getCartesianX(){
+    return this->cartesianCoords.getX()/100;
+}
+
+double ModelVector::getCartesianY(){
+    return this->cartesianCoords.getY()/100;
+}
+
+double ModelVector::getCartesianZ(){
+    return this->cartesianCoords.getZ()/100;
+}
+
 void ModelVector::setEquatorialCoords(EquatorialCoords coords){
     this->equatorialCoords = coords;
 }

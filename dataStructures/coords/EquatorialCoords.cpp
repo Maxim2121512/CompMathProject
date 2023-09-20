@@ -19,9 +19,9 @@ void EquatorialCoords::setDecl(double Decl){
 // theta - Ra from -pi  to pi
 // phi - Decl from -pi/2 to pi/2
 void EquatorialCoords::setEquatorial(double x, double y, double z){
-    double newX = x + X_BH;
-    double newY = y + Y_BH;
-    double newZ = z + Z_BH;
+    double newX = x*1000 + X_BH;
+    double newY = y*1000 + Y_BH;
+    double newZ = z*1000 + Z_BH;
     double d = sqrt(newX * newX + newY * newY);
 
 

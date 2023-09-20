@@ -63,6 +63,7 @@ Matrix Matrix::transpose() const{
     return transposed;
 }
 
+
 Matrix Matrix::CholeskyDecomposition(Matrix other) const{
     if(other.numRows != other.numColumns){
         std::cerr << "CholeskyDecomposition(Matrix other): num rows not equal num columns" << std::endl; 
@@ -72,23 +73,26 @@ Matrix Matrix::CholeskyDecomposition(Matrix other) const{
 
     for(int i = 0; i < other.numRows; i++){
         for(int j = 0; j <= i; j++){
-            double sum = 0;
+            long double sum = 0;
 
             for(int k = 0; k < j; k++){
-                sum += L.getElem(i,k) * L.getElem(j, k);
+                sum = std::fma(L.getElem(i,k), L.getElem(j, k), sum);
             }
 
             if( i == j ){
-                L.setElem(std::sqrt(other.getElem(i,i) - sum), i, j);
+                long double temp = pow(10,79) * other.getElem(i,i) - pow(10,10) * sum;
+                temp = temp / pow(10,79);
+                L.setElem(sqrtl(temp), i, j);
             }
             else{
-                L.setElem((1.0/ L.getElem(j,j) * (other.getElem(i,j) - sum)), i, j);
+                L.setElem(( 1.0/ L.getElem(j,j) * (pow(10,79) * other.getElem(i,j) - sum * pow(10,79)))/pow(10,79), i, j);
             }
         }
     }
 
     return L;
 }
+
 
 Matrix operator+(Matrix const m1, Matrix const m2){
     if ((m1.numColumns != m2.numColumns) or (m1.numRows != m2.numRows)){
